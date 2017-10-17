@@ -34,10 +34,13 @@ public class all extends Component {
         class buListen1 implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
+                /*
                 JFileChooser chooser = new JFileChooser();
                 chooser.setCurrentDirectory(new File("/"));
                 chooser.showOpenDialog(all.this);
                 String path = chooser.getSelectedFile().getPath();
+                */
+                String path = getpath();
                 try {
                     trick.readin(path);
                 } catch (FileNotFoundException e1) {
@@ -96,4 +99,12 @@ public class all extends Component {
 
     }
 
+
+    private String getpath(){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("/"));
+        chooser.showOpenDialog(all.this);
+        String path = chooser.getSelectedFile().getPath();
+        return path;
+    }
 }
