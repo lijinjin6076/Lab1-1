@@ -75,20 +75,6 @@ public class onz {
         }
         str = str + parrray[x2] + "->" + parrray[y2] + "}";
         String patt = System.getProperty("user.dir");
-        /*
-        File datafile = new File(patt + "/out/Graph.txt");
-        try {datafile.createNewFile();}
-        catch (IOException e) {}
-        try{
-            PrintWriter pw = new PrintWriter(datafile);
-            pw.write(str);
-            pw.close();
-        }
-        catch (FileNotFoundException e){}
-        File ff = new File(patt + "/out/Graph.dot");
-        if (ff.exists()) {boolean deletef = ff.delete();}
-        datafile.renameTo(new File(patt + "/out/Graph.dot"));
-        */
         File datafile = new File(patt + "/out/Graph.dot");
         try {datafile.createNewFile();}
         catch (IOException e) {}
@@ -98,7 +84,6 @@ public class onz {
             pw.close();
         }
         catch (FileNotFoundException e){}
-
         Runtime mt = Runtime.getRuntime();
         File myfile = new File(patt+"/release/bin/dot.exe", " -Tjpg "+patt+"/out/Graph.dot -o "+ patt+"/out/Graph.jpg");
         mt.exec(myfile.getAbsolutePath());

@@ -1,10 +1,10 @@
 package orz;
-import java.io.File;
+import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.Scanner;
+import java.util.regex.*;
 
 public class all extends Component {
     public void mainpage(){
@@ -34,12 +34,6 @@ public class all extends Component {
         class buListen1 implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                /*
-                JFileChooser chooser = new JFileChooser();
-                chooser.setCurrentDirectory(new File("/"));
-                chooser.showOpenDialog(all.this);
-                String path = chooser.getSelectedFile().getPath();
-                */
                 String path = getpath();
                 try {
                     trick.readin(path);
@@ -100,11 +94,32 @@ public class all extends Component {
     }
 
 
-    private String getpath(){
-        JFileChooser chooser = new JFileChooser();
+    private String getpath(String titel){
+        JFileChooser chooser = new JFileChooser(titel);
         chooser.setCurrentDirectory(new File("/"));
         chooser.showOpenDialog(all.this);
         String path = chooser.getSelectedFile().getPath();
         return path;
+    }
+    private String getpath(){ return getpath("打开");}
+    private void dotconfig() throws IOException {
+        String path = System.getProperty("user.dir");
+        File file = new File(path+"/config");
+        if (file.exists()){
+            InputStream inputStream = new FileInputStream(file); String string;
+            try (Scanner scanner = new Scanner(inputStream, "UTF-8")) {
+                string = scanner.useDelimiter("\\A").next();
+            }
+            String patt = "[DotPath=*]";
+            Pattern r = Pattern.compile(patt);
+            Matcher m = r.matcher(string);
+            if (m.find())   ;//hjgjkyhkgkhjgggggggggggggggggggggggggggggggggggggggggggggggggggyutugugjggyugkjhgtuy
+            else ;
+        }
+        else{
+            file.createNewFile();
+            String con = getpath("打开dot.exe所在位置");
+        }
+
     }
 }
