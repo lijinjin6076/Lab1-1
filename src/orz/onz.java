@@ -60,10 +60,12 @@ public class onz {
         nextnode[a][t] = b;
         ++weight[a][t];
     }
-    public void showDirectedGraph(int [][] nexnode, String [] parrray, int total){
-        String str = "digraph G {"; int x1 = -1, x2 = 0, y1 = -1, y2 = nexnode[0][0];
-        for (int i = 0; i < total; ++i){
-            if (nexnode[i][0] > -1) str = str + "\n";
+    public void showDirectedGraph(int [][] nexnode, String [] parrray, int total) throws IOException {
+        String str = "digraph G {";
+        int x1 = -1, x2 = 0, y1 = -1, y2 = nexnode[0][0];
+        for (int i = 0; i < total-1; ++i){
+            //if (nexnode[i][0] > -1)
+               // str = str + "\n";
             int j = 0;
             while (nexnode[i][j] != -1){
                 x2 = i; y2 = nexnode[i][j];
@@ -72,15 +74,8 @@ public class onz {
             }
         }
         str = str + parrray[x2] + "->" + parrray[y2] + "}";
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Please input a path(Default: D:/): ");
-        String patt = "D:/";
-        String pa = sc.nextLine();
-        File fff = new File(pa);
-        if (fff.exists()) { patt = pa;}
-        else System.out.println("That is a wrong path! Will try with the default path!");
-        String pat = patt + "Graph.txt";
-        File datafile = new File(pat);
+        String patt = System.getProperty("user.dir"); // ????????????????????????????????????????????????????
+        File datafile = new File(patt + "/out/Graph.txt");
         try {datafile.createNewFile();}
         catch (IOException e) {}
         try{
@@ -89,10 +84,13 @@ public class onz {
             pw.close();
         }
         catch (FileNotFoundException e){}
-        File ff = new File(patt + "Graph.dot");
+        File ff = new File(patt + "/out/Graph.dot");
         if (ff.exists()) {boolean deletef = ff.delete();}
-
-        datafile.renameTo(new File(patt + "Graph.dot"));
+        datafile.renameTo(new File(patt + "/out/Graph.dot"));
+        Runtime mt = Runtime.getRuntime();
+        File myfile = new File(patt+"/release/bin/dot.exe", " -Tpng "+patt+"/out/Graph.dot -o "+ patt+"/out/Graph.png");
+        //File myfile = new File(patt+"/release/bin/dot.exe");
+        mt.exec(myfile.getAbsolutePath());
     }
     public String queryBridgeWords(String word1, String word2){
         String answer;

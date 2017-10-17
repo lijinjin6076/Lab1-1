@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class all extends Component {
     public void mainpage(){
@@ -48,10 +49,13 @@ public class all extends Component {
         button1.addActionListener(new buListen1());
 
         class buListen2 implements ActionListener {
-
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    trick.showDirectedGraph(trick.nextnode, trick.pointarray, trick.top);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         }
         button2.addActionListener(new buListen2());
