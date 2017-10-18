@@ -63,12 +63,13 @@ public class all extends Component {
         frame.add(sbutton1); frame.add(sbutton2); frame.add(sbutton3);
         slabel1.setBounds(220, 30, 41, 25);
         word1txt.setBounds(263,30,100,25);
-        slabel2.setBounds(390, 30, 41, 25);
-        word2txt.setBounds(433,30,100,25);
+        slabel2.setBounds(380, 30, 41, 25);
+        word2txt.setBounds(423,30,100,25);
         slabel3.setBounds(220, 30, 52, 25);
         textField.setBounds(272,30,261,25);
         sbutton1.setBounds(535,30,60,24);
         sbutton2.setBounds(535,30,60,24);
+        sbutton3.setBounds(535,30,60,24);
         mmp();
 
 
@@ -105,8 +106,8 @@ public class all extends Component {
 
         class buListen3 implements ActionListener {
             @Override
-            public void actionPerformed(ActionEvent e) { mmp();
-                sbutton1.setVisible(true);
+            public void actionPerformed(ActionEvent e) {
+                mmp(); sbutton1.setVisible(true);
                 slabel1.setVisible(true); slabel2.setVisible(true);
                 word1txt.setVisible(true); word2txt.setVisible(true);
             }
@@ -123,9 +124,10 @@ public class all extends Component {
 
         class buListen5 implements ActionListener {
             @Override
-            public void actionPerformed(ActionEvent e) {mmp();
-
-                button6.setVisible(true);
+            public void actionPerformed(ActionEvent e) {
+                mmp(); sbutton3.setVisible(true);
+                slabel1.setVisible(true); word1txt.setVisible(true);
+                slabel2.setVisible(true); word2txt.setVisible(true);
             }
         }
         button5.addActionListener(new buListen5());
@@ -134,7 +136,6 @@ public class all extends Component {
             @Override
             public void actionPerformed(ActionEvent e) {mmp();
 
-                button6.setVisible(false);
             }
         }
         button6.addActionListener(new buListen6());
@@ -161,6 +162,18 @@ public class all extends Component {
             }
         }
         sbutton2.addActionListener(new sbuListen2());
+
+        class sbuListen3 implements ActionListener {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String word1 = word1txt.getText();
+                String word2 = word2txt.getText();
+                String string = area.getText();
+                string =  string + "\n" + trick.calcShortestPath(word1, word2);
+                area.setText(string);
+            }
+        }
+        sbutton3.addActionListener(new sbuListen3());
     }
     private void mmp(){
         slabel1.setVisible(false);
@@ -171,6 +184,7 @@ public class all extends Component {
         textField.setVisible(false);
         sbutton1.setVisible(false);
         sbutton2.setVisible(false);
+        sbutton3.setVisible(false);
     }
 
     private String getpath(String titel){

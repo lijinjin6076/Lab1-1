@@ -6,7 +6,6 @@ public class onz {
     public int top, check;
     private int [] dis, path;
     public int [][] nextnode, weight, prepoint;
-    private boolean [][] map;
     public boolean [] vis;
     private String ALLpath;
     public String [] pointarray = new String[233];
@@ -21,10 +20,9 @@ public class onz {
         prepoint = new int [233][233];
         dis = new int [233];
         vis = new boolean [233];
-        map = new boolean [233][233];
         top = 0;
         for (int i = 0; i < 233; ++i)
-            for (int j = 0; j < 233; ++j) { nextnode[i][j] = -1; weight[i][j] = 0; map[i][j] = false;}
+            for (int j = 0; j < 233; ++j) { nextnode[i][j] = -1; weight[i][j] = 0;}
     }
     public void readin(String string) throws FileNotFoundException {
         InputStream inputStream = new FileInputStream(string);
@@ -60,8 +58,7 @@ public class onz {
         int t = 0;
         while (nextnode[a][t] != b && nextnode[a][t] != -1) ++t;
         nextnode[a][t] = b;
-        ++weight[a][t];
-        map[a][b] = true;
+        ++weight[a][b];
     }
     public void showDirectedGraph(int [][] nexnode, String [] parrray, int total) throws IOException {
         String str = "digraph G {";
@@ -108,27 +105,20 @@ public class onz {
         int [] ans = new int [233];
         if (a == -1 || b == -1) answer = "No \"" + word1 + "\" or \"" + word2 + "\" in the graph!";
         else {
-            int i = 0;
-            while (nextnode[a][i] != -1){
-                int j = 0;
-                while (nextnode[nextnode[a][i]][j] != b && nextnode[nextnode[a][i]][j] != -1) ++j;
-                if (nextnode[nextnode[a][i]][j] == b) { ans[num] = nextnode[a][i]; ++num;}
-                ++i;
-            }
+            for (int i = 0, k; (k = nextnode[a][i]) != -1; ++i) if (weight[k][b] > 0) ans[num++] = k;
             switch (num){
                 case 0: answer = "No bridge word from \"" + word1 + "\" to \"" + word2 + "\"!"; break;
                 case 1: answer = "The bridge word from \"" + word1 + "\" to \"" + word2 + "\" is: " + pointarray[ans[0]] + "."; break;
                 case 2: answer = "The bridge words from \"" + word1 + "\" to \"" + word2 + "\" are: " + pointarray[ans[0]] + " and " + pointarray[ans[1]] + "."; break;
                 default:
                     answer = "The bridge words from \"" + word1 + "\" to \"" + word2 + "\" are : " + pointarray[ans[0]];
-                    for (i = 1; i < num -1; ++i) answer = answer + ", " + pointarray[ans[i]];
+                    for (int i = 1; i < num -1; ++i) answer = answer + ", " + pointarray[ans[i]];
                     answer = answer + " and "+ pointarray[ans[num-1]] + "."; break;
             }
         }
         return answer;
     }
     public String generateNewText(String inputText){
-        System.out.println(inputText);
     	String patt  = "\\p{Alpha}+";
         Pattern r = Pattern.compile(patt);
         Matcher m = r.matcher(inputText);
@@ -143,7 +133,7 @@ public class onz {
         		int i  = 0;
                 while (nextnode[a][i] != -1){
                     int k = nextnode[a][i];
-                    if (map[k][b]) { ans[num] = k; ++num;}
+                    if (weight[k][b] > 0) { ans[num] = k; ++num;}
                     ++i;
                 }
                 long t = System.currentTimeMillis();//获得当前时间的毫秒数
@@ -161,7 +151,7 @@ public class onz {
     		    for (int j = 0; j < top; ++j) prepoint[i][j] = -1;
     		}
     		for (int i = 0; nextnode[head][i] > -1; ++i) {
-    		    dis[nextnode[head][i]] = weight[head][i];
+    		    dis[nextnode[head][i]] = weight[head][nextnode[head][i]];
                 prepoint[nextnode[head][i]][0] = head;
             }
             vis[head] = false; dis[head] = 0; prepoint[head][0] = head;
@@ -172,12 +162,12 @@ public class onz {
                 vis[x] = false;
                 for (int j = 0; nextnode[x][j] != -1; ++j){
                     int y = nextnode[x][j];
-                    if (dis[y] > dis[x] + weight[x][j]) {
-                        dis[y] = dis[x] + weight[x][j];
+                    if (dis[y] > dis[x] + weight[x][y]) {
+                        dis[y] = dis[x] + weight[x][y];
                         for (int k = 1; prepoint[y][k] != -1; ++k) prepoint[y][k] = -1;
                         prepoint[y][0] = x;
                     }
-                    else if (dis[y] == dis[x] + weight[x][j]) {
+                    else if (dis[y] == dis[x] + weight[x][y]) {
                         int k = 0;
                         while (prepoint[y][k] != -1) ++k;
                         prepoint[y][k] = x;
