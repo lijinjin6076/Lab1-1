@@ -6,6 +6,7 @@ public class onz {
     public int top, check;
     private int [] dis, path;
     public int [][] nextnode, weight, prepoint;
+    private boolean [][] map;
     public boolean [] vis;
     private String ALLpath;
     public String [] pointarray = new String[233];
@@ -20,9 +21,10 @@ public class onz {
         prepoint = new int [233][233];
         dis = new int [233];
         vis = new boolean [233];
+        map = new boolean [233][233];
         top = 0;
         for (int i = 0; i < 233; ++i)
-            for (int j = 0; j < 233; ++j) { nextnode[i][j] = -1; weight[i][j] = 0;}
+            for (int j = 0; j < 233; ++j) { nextnode[i][j] = -1; weight[i][j] = 0; map[i][j] = false;}
     }
     public void readin(String string) throws FileNotFoundException {
         InputStream inputStream = new FileInputStream(string);
@@ -59,6 +61,7 @@ public class onz {
         while (nextnode[a][t] != b && nextnode[a][t] != -1) ++t;
         nextnode[a][t] = b;
         ++weight[a][t];
+        map[a][b] = true;
     }
     public void showDirectedGraph(int [][] nexnode, String [] parrray, int total) throws IOException {
         String str = "digraph G {";
@@ -84,14 +87,23 @@ public class onz {
             pw.close();
         }
         catch (FileNotFoundException e){}
+        /*
         Runtime mt = Runtime.getRuntime();
         File myfile = new File(patt+"/release/bin/dot.exe", " -Tjpg "+patt+"/out/Graph.dot -o "+ patt+"/out/Graph.jpg");
         mt.exec(myfile.getAbsolutePath());
-
         datafile.delete();
+        */
+    }
+    private String getword(String word){
+        String patt  = "\\p{Alpha}+";
+        Pattern r = Pattern.compile(patt);
+        Matcher m = r.matcher(word);
+        m.find();
+        return m.group();
     }
     public String queryBridgeWords(String word1, String word2){
         String answer;
+        word1 = getword(word1); word2 = getword(word2);
         int a = find_word(word1.toLowerCase()), b = find_word(word2.toLowerCase()), num = 0;
         int [] ans = new int [233];
         if (a == -1 || b == -1) answer = "No \"" + word1 + "\" or \"" + word2 + "\" in the graph!";
@@ -116,28 +128,27 @@ public class onz {
         return answer;
     }
     public String generateNewText(String inputText){
+        System.out.println(inputText);
     	String patt  = "\\p{Alpha}+";
         Pattern r = Pattern.compile(patt);
         Matcher m = r.matcher(inputText);
         String lastword, newword = "", answer = "";
-        int a, b = 0, num;
+        int a, b = -1, num;
         int [] ans = new int [233];
         while (m.find()) {
-        	lastword = newword;
-        	newword = m.group();
-        	if (!lastword.equals("")) {
-        		answer = answer + lastword + " "; a = b; num = 0;
-        		b = find_word(newword.toLowerCase());
+        	lastword = newword; newword = m.group();
+        	a = b; b = find_word(newword.toLowerCase());
+        	if (a > -1 && b >-1) {
+        		answer = answer + lastword + " "; num = 0;
         		int i  = 0;
                 while (nextnode[a][i] != -1){
-                    int j = 0, k = nextnode[a][i];
-                    while (nextnode[k][j] != b && nextnode[k][j] != -1) ++j;
-                    if (nextnode[k][j] == b) { ans[num] = nextnode[a][i]; ++num;}
+                    int k = nextnode[a][i];
+                    if (map[k][b]) { ans[num] = k; ++num;}
                     ++i;
                 }
                 long t = System.currentTimeMillis();//获得当前时间的毫秒数
                 Random rd = new Random(t);
-        		if (num > 0) answer = answer + pointarray[nextnode[a][(rd.nextInt() % num + num) % num]] + " ";
+        		if (num > 0) answer = answer + pointarray[ans[(rd.nextInt() % num + num) % num]] + " ";
         	}
         }
         answer = answer + newword;
