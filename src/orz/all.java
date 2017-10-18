@@ -13,21 +13,13 @@ public class all extends Component {
     JTextField word1txt = new JTextField();
     JTextField word2txt = new JTextField();
     JTextField textField = new JTextField();
-    JButton sbutton1 = new JButton("查询");
-    JButton sbutton2 = new JButton("查询");
-    JButton sbutton3 = new JButton("查询");
-
+    JButton sbutton = new JButton("查询");
+    int sbuttonkey = 0;
     public void mainpage(){
-        onz trick = new onz(); boolean che = true;
-        /*
-        while (che){
-            try {
-                trick.readin(getpath());
-                che = false;
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }*/
+        onz trick = new onz();
+        String path = System.getProperty("user.dir");
+        File file = new File(path + "/out");
+        file.mkdir();
         UIManager.put("Button.font", new Font("宋体",Font.PLAIN, 25));
         JFrame frame = new JFrame("Java是世界上最好的语言");
         JButton button1 = new JButton("读入新文本");
@@ -58,26 +50,30 @@ public class all extends Component {
         frame.add(scrollPane);
         area.setEditable(false);
 
+        boolean che = true; String ppp;
+        while (che){
+            try {
+                trick.readin(ppp = getpath());
+                area.setText("文件："+ ppp);
+                che = false;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
         frame.add(slabel1); frame.add(slabel2); frame.add(slabel3);
         frame.add(word1txt); frame.add(word2txt); frame.add(textField);
-        frame.add(sbutton1); frame.add(sbutton2); frame.add(sbutton3);
+        frame.add(sbutton); sbutton.setVisible(false);
         slabel1.setBounds(220, 30, 41, 25);
         word1txt.setBounds(263,30,100,25);
         slabel2.setBounds(380, 30, 41, 25);
         word2txt.setBounds(423,30,100,25);
         slabel3.setBounds(220, 30, 52, 25);
         textField.setBounds(272,30,261,25);
-        sbutton1.setBounds(535,30,60,24);
-        sbutton2.setBounds(535,30,60,24);
-        sbutton3.setBounds(535,30,60,24);
+        sbutton.setBounds(535,30,60,24);
         mmp();
 
-
-
         frame.setVisible(true);
-
-
-
         class buListen1 implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -107,7 +103,7 @@ public class all extends Component {
         class buListen3 implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mmp(); sbutton1.setVisible(true);
+                mmp(); sbutton.setVisible(true); sbuttonkey = 1;
                 slabel1.setVisible(true); slabel2.setVisible(true);
                 word1txt.setVisible(true); word2txt.setVisible(true);
             }
@@ -117,7 +113,7 @@ public class all extends Component {
         class buListen4 implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) { mmp();
-                slabel3.setVisible(true); textField.setVisible(true); sbutton2.setVisible(true);
+                slabel3.setVisible(true); textField.setVisible(true); sbuttonkey = 2;
             }
         }
         button4.addActionListener(new buListen4());
@@ -125,7 +121,7 @@ public class all extends Component {
         class buListen5 implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mmp(); sbutton3.setVisible(true);
+                mmp(); sbutton.setVisible(true); sbuttonkey = 3;
                 slabel1.setVisible(true); word1txt.setVisible(true);
                 slabel2.setVisible(true); word2txt.setVisible(true);
             }
@@ -134,46 +130,33 @@ public class all extends Component {
 
         class buListen6 implements ActionListener {
             @Override
-            public void actionPerformed(ActionEvent e) {mmp();
-
+            public void actionPerformed(ActionEvent e) {mmp(); sbutton.setVisible(false);
+                String string = area.getText();
+                string =  string + "\n" + trick.randomWalk();
+                area.setText(string);
             }
         }
         button6.addActionListener(new buListen6());
 
-        class sbuListen1 implements ActionListener{
+        class sbuListen implements ActionListener{
             @Override
             public void actionPerformed(ActionEvent e) {
-                String word1 = word1txt.getText();
-                String word2 = word2txt.getText();
                 String string = area.getText();
-                string =  string + "\n" + trick.queryBridgeWords(word1, word2);
+                if (sbuttonkey == 2){
+                    String txtstr = textField.getText();
+                    string = string + "\n" + trick.generateNewText(txtstr);
+                }
+                else{
+                    String word1 = word1txt.getText();
+                    String word2 = word2txt.getText();
+                    if (sbuttonkey == 1) string =  string + "\n" + trick.queryBridgeWords(word1, word2);
+                    else string =  string + "\n" + trick.calcShortestPath(word1, word2);
+                }
                 area.setText(string);
             }
         }
-        sbutton1.addActionListener(new sbuListen1());
+        sbutton.addActionListener(new sbuListen());
 
-        class sbuListen2 implements ActionListener {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String txtstr = textField.getText();
-                String string = area.getText();
-                string = string + "\n" + trick.generateNewText(txtstr);
-                area.setText(string);
-            }
-        }
-        sbutton2.addActionListener(new sbuListen2());
-
-        class sbuListen3 implements ActionListener {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String word1 = word1txt.getText();
-                String word2 = word2txt.getText();
-                String string = area.getText();
-                string =  string + "\n" + trick.calcShortestPath(word1, word2);
-                area.setText(string);
-            }
-        }
-        sbutton3.addActionListener(new sbuListen3());
     }
     private void mmp(){
         slabel1.setVisible(false);
@@ -182,9 +165,6 @@ public class all extends Component {
         word1txt.setVisible(false);
         word2txt.setVisible(false);
         textField.setVisible(false);
-        sbutton1.setVisible(false);
-        sbutton2.setVisible(false);
-        sbutton3.setVisible(false);
     }
 
     private String getpath(String titel){
@@ -195,6 +175,22 @@ public class all extends Component {
         return path;
     }
     private String getpath(){ return getpath("打开");}
+    private String tmd(){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File("."));
+        chooser.showOpenDialog(all.this);
+        File f =  chooser.getSelectedFile();
+        String string = f.getPath();
+
+        return string;
+    }
+    private String getword(String word){
+        String patt  = "\\p{Alpha}+";
+        Pattern r = Pattern.compile(patt);
+        Matcher m = r.matcher(word);
+        m.find();
+        return m.group();
+    }
     /*
     private void dotconfig() throws IOException {
         String path = System.getProperty("user.dir");

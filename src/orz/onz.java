@@ -3,18 +3,19 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 public class onz {
-    public int top, check;
+    protected int top, check;
     private int [] dis, path;
-    public int [][] nextnode, weight, prepoint;
-    public boolean [] vis;
+    protected int [][] nextnode, weight, prepoint;
+    private boolean [] vis;
     private String ALLpath;
-    public String [] pointarray = new String[233];
-    public int find_word(String word){
+    protected String [] pointarray = new String[233];
+
+    private int find_word(String word){
         int flag = -1;
         for (int i = 0; i < top; ++i) if (word.toLowerCase().equals(pointarray[i])) {flag = i; break;}
         return flag;
     }
-    public void initialise(){
+    private void initialise(){
         nextnode = new int [233][233];
         weight = new int [233][233];
         prepoint = new int [233][233];
@@ -41,7 +42,7 @@ public class onz {
             if (!word1.equals("")) insert_word(word1, word2);
         }
     }
-    public void insert_word(String word1, String word2){
+    private void insert_word(String word1, String word2){
         int a, b; check = -1;
 	    if (0 != top) a = find_word(word1);
 	    else { 
@@ -215,10 +216,6 @@ public class onz {
     	else answer = calcShortestPath(a, b);
     	return answer;
     }
-    public void calcShortestPath(String word){
-        if (find_word(word) == -1) System.out.println("\"" + word + "\" no exist!");
-        else for (int i = 0; i < top; ++i) System.out.println(calcShortestPath(find_word(word), i));
-    }
     public String randomWalk()  {
         boolean [][] vissss = new boolean [top][top];
         for (int i = 0; i < top; ++i) for (int j = 0; j < top; ++j) vissss[i][j] = true;
@@ -238,13 +235,8 @@ public class onz {
             }
             answer = answer + "->" + pointarray[nextn];
         }
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Please input a path(Default: D:/randonwork.txt): ");
-        String pat = "D:/randonwork.txt";
-        String pa = sc.nextLine();
-        File fff = new File(pa);
-        if (fff.exists()) { pat = pa;}
-        else System.out.println("That is a wrong path! Will try with the default path!");
+        String pat = System.getProperty("user.dir");
+        pat = pat + "/out/randonwork.txt";
         File datafile = new File(pat);
         try {datafile.createNewFile();}
         catch (IOException e) {}
